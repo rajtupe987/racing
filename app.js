@@ -16,6 +16,7 @@ require("dotenv").config();
 app.use("/user", router);
 
 
+
 app.get("/",(req,res)=>{
   res.send("WELCOME")
 })
