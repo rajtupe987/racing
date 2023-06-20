@@ -4,7 +4,7 @@ const jwt=require("jsonwebtoken")
 const bcrypt=require("bcrypt")
 const {userModel}=require("../model/usermode");
 
-const {authenticate}=require("../Middleware/auth")
+const {authenticate}=require("../middleware/auth")
 const cookieparser=require("cookie-parser")
 router.use(cookieparser())
 const {blacklistModel}=require("../model/blacklistmodel")
