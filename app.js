@@ -32,10 +32,10 @@ const expressServer = app.listen(process.env.PORT, async () => {
     await connection;
     console.log("connected to db");
   } catch (error) {
-    console.log(error.message);
+    //console.log(error.message);
   }
 
-  console.log(`${process.env.PORT}`);
+  //console.log(`${process.env.PORT}`);
 });
 
 const io = socketio(expressServer);
@@ -59,20 +59,20 @@ io.on("connection", (socket) => {
 
   socket.on("username", ({ username }) => {
     var id = randomId(len, pattern);
-    console.log(id);
+    //console.log(id);
     socket.emit("roomno", id);
   });
   let Room;
   socket.on("joinroom", ({ username, roomvalue }) => {
     const user = User(socket.id, username, roomvalue);
-    console.log(roomvalue + "from join room");
-    console.log(socket.id + "from line no 68");
+    //console.log(roomvalue + "from join room");
+    //console.log(socket.id + "from line no 68");
     socket.join(roomvalue);
     Room = roomvalue;
     io.emit("usersarray", users);
     socket.emit("message", "WELCOME TO RACE BUDDY 😉");
   });
-  console.log(`One user connected, total user : ${count}`);
+  //console.log(`One user connected, total user : ${count}`);
 
   socket.on("timeleft", (data) => {
     let { timeleft } = data;
@@ -91,14 +91,14 @@ io.on("connection", (socket) => {
 
   //recieving the typed text from client
   socket.on("typedText", ({ typedText }) => {
-    console.log(`person having id ${socket.id} is typing :`, typedText);
+   // console.log(`person having id ${socket.id} is typing :`, typedText);
 
     if (
       typedText[typedText.length - 1] == myParagraph[typedText.length - 1] &&
       includeFunction(myParagraph, typedText)
     ) {
       if (typedText.length == myParagraph.length) {
-        console.log(typedText);
+        //console.log(typedText);
         // users = []
         return socket.emit("typing-update", {
           typedText: "You have finished the race buddy 👏👏👏",
@@ -107,8 +107,8 @@ io.on("connection", (socket) => {
       }
       if (typedText[typedText.length - 1] == " ") {
         let user = update_word_function(socket.id, typedText);
-        console.log(user);
-        console.log(user[0]);
+        //console.log(user);
+        //console.log(user[0]);
         io.to(user[0].roomvalue).emit("user_data", user[0]);
       }
       // console.log({ typedText, keyCode });
@@ -133,7 +133,7 @@ io.on("connection", (socket) => {
   //disconnet
   socket.on("disconnect", () => {
     count -= 1;
-    console.log(`One user left, ${count} remaining!!`);
+    //console.log(`One user left, ${count} remaining!!`);
     io.emit("user count", count);
   });
 });
