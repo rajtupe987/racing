@@ -14,15 +14,12 @@ require("dotenv").config();
 
 router.post("/signup",async(req,res)=>{
     try {
-        const {name,email,username,password,conformpassword}=req.body
+        const {name,email,password,conformpassword}=req.body
         if(!name){
             return res.status(400).send({"ok": false,"msg":"name is required"})
         }
         if(!email){
             return res.status(400).send({"ok": false,"msg":"email is required"})
-        }
-        if(!username){
-            return res.status(400).send({"ok": false,"msg":"username is required"})
         }
         if(!password){
             return res.status(400).send({"ok": false,"msg":"password is required"})
@@ -42,7 +39,7 @@ router.post("/signup",async(req,res)=>{
                 console.log("bcrypt",error)
                 return res.status(500).send({"ok": false,"msg":"something went wrong"})  
             }
-            const user= new userModel({name,email,username,password:hash})
+            const user= new userModel({name,email,password:hash})
              await user.save()
              res.status(200).send({"ok": true,"msg":"register seccessfully"})
         })  
@@ -54,24 +51,35 @@ router.post("/signup",async(req,res)=>{
 
 // ********************* login *************************
 router.post("/login",async(req,res)=>{
-    const {username,password}=req.body
-    console.log(username,password)
+    const {email,password}=req.body
+    console.log(email,password)
     try {
-        if(!username){
+        if(!email){
             return res.status(400).send({"ok": false,"msg":"put username"})
         }
         if(!password){
             return res.status(400).send({"ok": false,"msg":"put password"})
         }
-        const user=await userModel.findOne({username})
+        const user=await userModel.findOne({email})
         //console.log(user)
         if(user){
             bcrypt.compare(password,user.password,(error,result)=>{
                if(result){
-                const accesstoken=jwt.sign({username},process.env.secrete_key,{expiresIn:"6h"})
-                const refreshtoken=jwt.sign({username},process.env.ref_key,{expiresIn:"24h"})
-                res.cookie("accessToken",accesstoken,{maxAge:7*24*60*60*1000})
+                const token=jwt.sign({email},process.env.secrete_key,{expiresIn:"6h"})
+                const refreshtoken=jwt.sign({email},process.env.ref_key,{expiresIn:"24h"})
+                res.cookie("accessToken",token,{maxAge:7*24*60*60*1000})
                 res.cookie("refreshToken",refreshtoken,{maxAge:7*24*60*60*1000})
+
+
+                const response = {
+                    "ok": true,
+                    "token": token,
+                    "msg": "Login Successfull",
+                    "approved": user.approved,
+                    "id": user._id,
+                    "userName": user.name
+                  }
+                  res.status(200).json(response)
                 res.status(200).send({"ok": true,"msg":"login syccessfull","token":accesstoken})
                }else{
                 return res.status(400).send({"ok": false,"msg":"wrong password"})

@@ -33,6 +33,7 @@ function update_word_function(socketID, typedText) {
     }
   });
 
+  
   if (single_user.length === 0) {
     const newUser = {
       id: socketID,
