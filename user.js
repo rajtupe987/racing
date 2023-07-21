@@ -35,22 +35,8 @@ function update_word_function(socketID, typedText) {
 
   // console.log(one_user);
   // console.log(users);
-  // If there's no matching user with the given socketID, create a new user object with a default roomvalue
-  if (single_user.length === 0) {
-    const newUser = {
-      id: socketID,
-      userSet: new Set([typedText]),
-      wordCount: 1,
-      roomvalue: "default_room", // Set a default value for roomvalue
-    };
-    users.push(newUser);
-    return [newUser]; // Return an array containing the newly created user
-  }
-
   return single_user;
 }
-
-
 
 // console.log(one_user);
 
