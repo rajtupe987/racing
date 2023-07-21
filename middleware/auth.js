@@ -10,7 +10,7 @@ const authenticate=async(req,res,next)=>{
             const tokenblacklist=await blacklistModel.findOne({accessToken:token})
             //console.log("token",tokenblacklist)
             if(tokenblacklist){
-                return res.status(401).send({"message":"please login"})
+                return res.status(401).send({"msg":"please login"})
             }
             const decoded=jwt.verify(token,process.env.secrete_key)
             if(decoded){
@@ -18,15 +18,15 @@ const authenticate=async(req,res,next)=>{
                // console.log(req.body.email)
                 next()
             }else{
-                return res.status(400).send({"message":"please login"})
+                return res.status(400).send({"msg":"please login"})
             }
 
         }else{
-            return res.status(400).send({"message":"please login"})
+            return res.status(400).send({"msg":"please login"})
         }
     } catch (error) {
         console.log(error)
-        res.status(500).send({"message":"something weent wrong on authenticate"})
+        res.status(500).send({"msg":"something weent wrong on authenticate"})
     }
 }
 

@@ -1,13 +1,15 @@
 const express = require("express");
 const app = express();
-const socketio = require("socket.io");
 
-const mongoose = require("mongoose");
+const socketio = require("socket.io");
+let { connection } = require("./Database/db");
+
+
 var randomId = require("random-id");
 const { User, update_word_function } = require("./user");
 let { users } = require("./user");
 let cors = require("cors");
-let { connection } = require("./Database/db");
+
 let { router } = require("./Controller/user.rout");
 
 app.use(cors());
@@ -30,12 +32,11 @@ var pattern = "aA0";
 const expressServer = app.listen(process.env.PORT, async () => {
   try {
     await connection;
-    console.log("connected to db");
+    console.log(`connected to db ${process.env.PORT}`);
   } catch (error) {
-    // console.log(error.message);
+    console.log(error.message);
   }
 
-  //console.log(`${process.env.PORT}`);
 });
 
 const io = socketio(expressServer);
@@ -45,6 +46,8 @@ const io = socketio(expressServer);
 
 // here is my ranodom paragraph
 let para = [
+  "One such sentence is The quick brown fox jumps over the lazy dog.This sentence uses every letter of the alphabet, making it a great way to warm up your fingers before embarking on a long typing session.",
+  "The quick brown fox jumps over the lazy dog.",
   "The train leaves every morning at 8AM.",
   "Tomorrow early morning first I go to morning walk.",
   "I and my sister dont see each other anymore.",
@@ -59,12 +62,12 @@ io.on("connection", (socket) => {
 
   socket.on("username", ({ username }) => {
     var id = randomId(len, pattern);
-    //console.log(id);
+    console.log(id);
     socket.emit("roomno", id);
   });
   let Room;
   socket.on("joinroom", ({ username, roomvalue }) => {
-    const user = User(socket.id, username, roomvalue);
+    const users = User(socket.id, username, roomvalue);
     console.log(roomvalue + "from join room");
     console.log(socket.id + "from line no 68");
     socket.join(roomvalue);
