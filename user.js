@@ -33,8 +33,17 @@ function update_word_function(socketID, typedText) {
     }
   });
 
-  // console.log(one_user);
-  // console.log(users);
+  if (single_user.length === 0) {
+    const newUser = {
+      id: socketID,
+      userSet: new Set([typedText]),
+      wordCount: 1,
+      roomvalue: "default_room", // Set a default value for roomvalue
+    };
+    users.push(newUser);
+    return [newUser]; // Return an array containing the newly created user
+  }
+
   return single_user;
 }
 
