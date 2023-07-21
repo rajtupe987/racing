@@ -3,14 +3,13 @@ const app = express();
 
 const socketio = require("socket.io");
 let { connection } = require("./Database/db");
-
-
 var randomId = require("random-id");
 const { User, update_word_function } = require("./user");
 let { users } = require("./user");
 let cors = require("cors");
 
 let { router } = require("./Controller/user.rout");
+
 
 app.use(cors());
 app.use(express.json());
