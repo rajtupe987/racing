@@ -1,25 +1,99 @@
 const express = require("express");
 const app = express();
-const socketio = require("socket.io");
 
-const mongoose = require("mongoose");
+const socketio = require("socket.io");
+let { connection } = require("./Database/db");
+
+const {Auth_route}=require("./Controller/oath")
 var randomId = require("random-id");
 const { User, update_word_function } = require("./user");
-let { users } = require("./user");
+const swaggerJSDoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
 let cors = require("cors");
-let { connection } = require("./Database/db");
+
 let { router } = require("./Controller/user.rout");
 
 app.use(cors());
 app.use(express.json());
 require("dotenv").config();
-app.use("/user", router);
-
-
 
 app.get("/",(req,res)=>{
-  res.send("WELCOME")
+  // res.send("WELCOME")
+  res.redirect('https://lambent-selkie-8d4f00.netlify.app/');
 })
+
+
+// swagger part
+/**
+* @swagger
+* components:
+*   schemas:
+*       user:
+*           type: object
+*           required:
+*              - name
+*              - email
+*              - password
+*           properties:
+*               name:
+*                   type: string
+*                   description: username of the user
+*               email:
+*                   type: string
+*                   description: The user email
+*               password:
+*                   type: string
+*                   description: The user password
+* 
+*/
+/**
+* @swagger
+* components:
+*   schemas:
+*       blacklistedtoken:
+*           type: object
+*           properties:
+*               accessToken:
+*                   type: string
+*                   description: accessToken of the user
+*               refreshToken:
+*                   type: string
+*                   description: refreshToken of the user
+*               
+*/
+
+const options = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'Node.js TypeRacer project ',
+      version: '1.0.0',
+      description:
+        "About : - This is an type racer application where you can check your typing speed like playing game.",
+      license: {
+        name: "TypeRacer"
+      },
+      contact: {
+        name: "TypeRacer",
+        url: "TypeRacer.com",
+        email: "rajtupe@gmail.com",
+      },
+    },
+    servers: [
+      {
+        url: 'http://localhost:8080/'
+      }
+    ]
+  },
+  apis: ['./app.js']
+}
+
+const swaggerData = swaggerJSDoc(options)
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerData))
+
+
+app.use("/user", router);
+app.use("/auth",Auth_route)
 
 // length of the id (default is 30)
 var len = 10;
@@ -30,12 +104,11 @@ var pattern = "aA0";
 const expressServer = app.listen(process.env.PORT, async () => {
   try {
     await connection;
-    console.log("connected to db");
+    console.log(`connected to db ${process.env.PORT}`);
   } catch (error) {
     console.log(error.message);
   }
 
-  console.log(`${process.env.PORT}`);
 });
 
 const io = socketio(expressServer);
@@ -45,6 +118,8 @@ const io = socketio(expressServer);
 
 // here is my ranodom paragraph
 let para = [
+  "One such sentence is The quick brown fox jumps over the lazy dog.This sentence uses every letter of the alphabet, making it a great way to warm up your fingers before embarking on a long typing session.",
+  "The quick brown fox jumps over the lazy dog.",
   "The train leaves every morning at 8AM.",
   "Tomorrow early morning first I go to morning walk.",
   "I and my sister dont see each other anymore.",
@@ -64,7 +139,7 @@ io.on("connection", (socket) => {
   });
   let Room;
   socket.on("joinroom", ({ username, roomvalue }) => {
-    const user = User(socket.id, username, roomvalue);
+    const users = User(socket.id, username, roomvalue);
     console.log(roomvalue + "from join room");
     console.log(socket.id + "from line no 68");
     socket.join(roomvalue);
@@ -91,7 +166,7 @@ io.on("connection", (socket) => {
 
   //recieving the typed text from client
   socket.on("typedText", ({ typedText }) => {
-    console.log(`person having id ${socket.id} is typing :`, typedText);
+    //console.log(`person having id ${socket.id} is typing :`, typedText);
 
     if (
       typedText[typedText.length - 1] == myParagraph[typedText.length - 1] &&
@@ -107,8 +182,8 @@ io.on("connection", (socket) => {
       }
       if (typedText[typedText.length - 1] == " ") {
         let user = update_word_function(socket.id, typedText);
-        console.log(user);
-        console.log(user[0]);
+        //console.log(user);
+        //console.log(user[0]);
         io.to(user[0].roomvalue).emit("user_data", user[0]);
       }
       // console.log({ typedText, keyCode });
@@ -130,10 +205,11 @@ io.on("connection", (socket) => {
       });
     }
   });
+  
   //disconnet
   socket.on("disconnect", () => {
     count -= 1;
-    console.log(`One user left, ${count} remaining!!`);
+    //console.log(`One user left, ${count} remaining!!`);
     io.emit("user count", count);
   });
 });

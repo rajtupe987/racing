@@ -1,3 +1,5 @@
-const mongoose=require("mongoose")
-const connection=mongoose.connect("mongodb+srv://khirod:khirodsamal@cluster0.yvhnl0b.mongodb.net/typeRacer?retryWrites=true&w=majority")
+const mongoose=require("mongoose");
+
+require("dotenv").config()
+const connection=mongoose.connect(process.env.mongoDbURL)
 module.exports={connection}
