@@ -283,7 +283,7 @@ const options = {
       }
     ]
   },
-  apis: ['./app.js']
+  apis: ['./index.js']
 }
 
 const swaggerData = swaggerJSDoc(options)
