@@ -126,14 +126,13 @@ router.post("/signup", async (req, res) => {
       if (!user) {
         return res.status(401).json({ msg: "User with this email not found", ok: false })
       }
-      const isPasswordSame = await bcrypt.compare(pass, user.pass)
+      const isPasswordSame = await bcrypt.compare(password, user.password)
       if (!isPasswordSame) {
         return res.status(401).json({ msg: "Invalid email or password", ok: false })
       }
   
       //{ userId: user._id } == this is going to encoded into jwt
       const token = jwt.sign({ userId: user._id }, process.env.secret, { expiresIn: '1hr' })
-      const refreshToken = jwt.sign({ userId: user._id }, process.env.refresh_secret, { expiresIn: "3hr" })
       const response = {
         "ok": true,
         "token": token,
