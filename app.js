@@ -1,14 +1,12 @@
 const express = require("express");
-const app = express();
-
-const socketio = require("socket.io");
 let { connection } = require("./Database/db");
-
+const socketio = require("socket.io")
 const {Auth_route}=require("./Controller/oath")
 var randomId = require("random-id");
 const { User, update_word_function } = require("./user");
 const swaggerJSDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
+const app = express();
 let cors = require("cors");
 
 let { router } = require("./Controller/user.rout");
@@ -18,8 +16,8 @@ app.use(express.json());
 require("dotenv").config();
 
 app.get("/",(req,res)=>{
-  // res.send("WELCOME")
-  res.redirect('https://lambent-selkie-8d4f00.netlify.app/');
+   res.send("WELCOME")
+  //res.redirect('https://lambent-selkie-8d4f00.netlify.app/');
 })
 
 
@@ -28,10 +26,10 @@ app.get("/",(req,res)=>{
 app.use("/user", router);
 app.use("/auth",Auth_route)
 
-let ur="mongodb+srv://Raj:Raj@cluster0.egewdp3.mongodb.net/ruralsnails?retryWrites=true&w=majority"
+//let ur="mongodb+srv://Raj:Raj@cluster0.egewdp3.mongodb.net/ruralsnails?retryWrites=true&w=majority"
 const expressServer = app.listen(process.env.PORT, async () => {
   try {
-    await ur;
+    await connection
     console.log(`connected to db ${process.env.PORT}`);
   } catch (error) {
     console.log(error.message);
