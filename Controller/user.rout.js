@@ -44,18 +44,20 @@ router.post("/signup",async(req,res)=>{
              res.status(200).send({"ok": true,"msg":"register seccessfully"})
         })  
     } catch (error) {
-        console.log(error)
-        res.status(500).send({"ok": false,"msg":"something went wrong "})
+        //console.log(error)
+       res.status(500).send({"ok": false,"msg":"something went wrong "})
     }
+
+
 })
 
 // ********************* login *************************
 router.post("/login",async(req,res)=>{
     const {email,password}=req.body
-    console.log(email,password)
+    
     try {
         if(!email){
-            return res.status(400).send({"ok": false,"msg":"put username"})
+            return res.status(400).send({"ok": false,"msg":"put email"})
         }
         if(!password){
             return res.status(400).send({"ok": false,"msg":"put password"})
@@ -67,20 +69,18 @@ router.post("/login",async(req,res)=>{
                if(result){
                 const token=jwt.sign({email},process.env.secrete_key,{expiresIn:"6h"})
                 const refreshtoken=jwt.sign({email},process.env.ref_key,{expiresIn:"24h"})
-                res.cookie("accessToken",token,{maxAge:7*24*60*60*1000})
+                res.cookie("token",token,{maxAge:7*24*60*60*1000})
                 res.cookie("refreshToken",refreshtoken,{maxAge:7*24*60*60*1000})
 
 
                 const response = {
-                    "ok": true,
+                    "approved": true,
                     "token": token,
                     "msg": "Login Successfull",
-                    "approved": user.approved,
                     "id": user._id,
                     "userName": user.name
                   }
                   res.status(200).json(response)
-                res.status(200).send({"ok": true,"msg":"login syccessfull","token":accesstoken})
                }else{
                 return res.status(400).send({"ok": false,"msg":"wrong password"})
                } 
@@ -89,7 +89,6 @@ router.post("/login",async(req,res)=>{
             return res.status(400).send({"ok": false,"msg":"put correct email id"})
         }
     } catch (error) {
-        //console.log(error)
         res.status(400).send({"ok": false,"msg":"something went wrong"})
     }
 })
@@ -103,7 +102,7 @@ router.get("/refreshtoken",async(req,res)=>{
         if(isblacklist) return res.status(400).send({msg:"Please login"})
         if(refreshtoken){
             const isvalid=jwt.verify(refreshtoken,process.env.ref_key)
-            //console.log(isvalid)
+           
             if(isvalid){
             const newaccesstoken=jwt.sign({email:isvalid.email},process.env.secrete_key,{expiresIn:"6h"})
             res.cookie("accessToken",newaccesstoken,{maxAge:7*24*60*60*1000})
@@ -113,7 +112,7 @@ router.get("/refreshtoken",async(req,res)=>{
             res.status(400).send({"ok": false,"msg":"please login"})
         }
     } catch (error) {
-        //console.log(error)
+        
         return res.send({"ok": false,"msg":error.message})
     }
    
@@ -124,7 +123,6 @@ router.get("/refreshtoken",async(req,res)=>{
 
 router.get("/logout",authenticate,async(req,res)=>{
     const {accessToken,refreshToken}=req.cookies
-   // console.log(accessToken,refreshToken)
     const Baccesstoken= new blacklistModel({accessToken})
     await Baccesstoken.save()
     const Brefreshtoken= new blacklistModel({refreshToken})
