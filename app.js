@@ -24,6 +24,20 @@ app.get("/",(req,res)=>{
 
 
 
+app.use("/user", router);
+app.use("/auth",Auth_route)
+
+
+const expressServer = app.listen(process.env.PORT, async () => {
+  try {
+    await connection;
+    console.log(`connected to db ${process.env.PORT}`);
+  } catch (error) {
+    console.log(error.message);
+  }
+
+});
+
 
 // swagger part
 /**
@@ -290,24 +304,12 @@ const swaggerData = swaggerJSDoc(options)
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerData))
 
 
-app.use("/user", router);
-app.use("/auth",Auth_route)
-
 // length of the id (default is 30)
 var len = 10;
 // pattern to determin how the id will be generated
 // default is aA0 it has a chance for lowercased capitals and numbers
 var pattern = "aA0";
 
-const expressServer = app.listen(process.env.PORT, async () => {
-  try {
-    await connection;
-    console.log(`connected to db ${process.env.PORT}`);
-  } catch (error) {
-    console.log(error.message);
-  }
-
-});
 
 const io = socketio(expressServer);
 
