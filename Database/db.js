@@ -2,8 +2,12 @@
 const mongoose = require("mongoose");
 require("dotenv").config();
 
+const connectDB = () => {
+  return mongoose.connect(process.env.mongoDbURL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true,
+  });
+};
 
-  const connection= mongoose.connect(process.env.mongoDbURL);
-
-
-module.exports = { connection };
+module.exports = { connectDB };
