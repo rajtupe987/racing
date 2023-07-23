@@ -34,7 +34,7 @@ Auth_route.get(
 
 // if suppose it OAuth fails 
 Auth_route.get("/google/failure", (req, res) => {
-    res.redirect("https://64bd4de233a8cd30b1944f77--reacertyper.netlify.app/login.html")
+    res.redirect("https://reacertyper.netlify.app/login.html/login.html")
 })
 
 

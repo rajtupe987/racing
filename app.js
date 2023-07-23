@@ -17,8 +17,8 @@ app.use(express.json());
 require("dotenv").config();
 
 app.get("/",(req,res)=>{
-  // res.send("WELCOME")
-  res.redirect('https://reacertyper.netlify.app/');
+   res.send("WELCOME")
+  //res.redirect('https://reacertyper.netlify.app/');
 })
 
 
