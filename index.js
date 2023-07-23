@@ -279,7 +279,7 @@ const options = {
     },
     servers: [
       {
-        url: 'http://localhost:8080/'
+        url: 'https://rural-snails-2863.up.railway.app/'
       }
     ]
   },
