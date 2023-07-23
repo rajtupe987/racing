@@ -24,6 +24,7 @@ app.get("/",(req,res)=>{
 
 
 
+
 app.use("/user", router);
 app.use("/auth",Auth_route)
 
