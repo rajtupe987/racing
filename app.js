@@ -19,7 +19,7 @@ require("dotenv").config();
 
 app.get("/",(req,res)=>{
   // res.send("WELCOME")
-  res.redirect('https://lambent-selkie-8d4f00.netlify.app/');
+  res.redirect('https://reacertyper.netlify.app/');
 })
 
 
