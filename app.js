@@ -301,7 +301,7 @@ var pattern = "aA0";
 
 const expressServer = app.listen(process.env.PORT, async () => {
   try {
-    await connectDB();
+    await connectDB;
     console.log(`connected to db ${process.env.PORT}`);
   } catch (error) {
     console.log(error.message);
