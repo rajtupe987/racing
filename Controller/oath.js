@@ -30,13 +30,13 @@ Auth_route.get(
       
         //rural-snails-2863.up.railway.app
         //http://localhost:8080
-        res.redirect(`http://localhost:8080/?id=${user._id}&token=${token}&approved=${user.approved}&username=${user.userName}`)
+        res.redirect(`https://rural-snails-2863.up.railway.app/?id=${user._id}&token=${token}&approved=${user.approved}&username=${user.userName}`)
     }
 );
 
 // if suppose it OAuth fails 
 Auth_route.get("/google/failure", (req, res) => {
-    res.redirect("http://localhost:8080/login.html")
+    res.redirect("https://reacertyper.netlify.app/login.html")
 })
 
 
@@ -47,7 +47,7 @@ passport.use(
         {
             clientID: process.env.GOOGLE_CLIENT_ID,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-            callbackURL: "http://localhost:8080/auth/google/callback",
+            callbackURL: "https://rural-snails-2863.up.railway.app/auth/google/callback",
             passReqToCallback: true
         },
         async function (request, accessToken, refreshToken, profile, cb) {
