@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 
 const socketio = require("socket.io");
-let { connectDB } = require("./Database/db");
+let { connection } = require("./Database/db");
 
 const {Auth_route}=require("./Controller/oath")
 var randomId = require("random-id");
@@ -301,7 +301,7 @@ var pattern = "aA0";
 
 const expressServer = app.listen(process.env.PORT, async () => {
   try {
-    await connectDB;
+    await connection;
     console.log(`connected to db ${process.env.PORT}`);
   } catch (error) {
     console.log(error.message);
