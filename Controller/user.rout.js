@@ -36,7 +36,6 @@ require("dotenv").config();
        
 //         bcrypt.hash(password,7,async(error,hash)=>{
 //             if(error){
-//                 console.log("bcrypt",error)
 //                 return res.status(500).send({"ok": false,"msg":"something went wrong"})  
 //             }
 //             const user= new userModel({name,email,password:hash})
@@ -51,7 +50,7 @@ require("dotenv").config();
 
 // })
 
-// // ********************* login *************************
+// ********************* login *************************
 // router.post("/login",async(req,res)=>{
 //     const {email,password}=req.body
     
@@ -94,21 +93,18 @@ require("dotenv").config();
 // })
 
 
-// ************ refreshtoken ************
-
-
-router.post("/register", async (req, res) => {
-    const { name, email, pass } = req.body;
-    const check = await userModel.find({ email });
-    if (check.length > 0) {
+router.post("/signup", async (req, res) => {
+    const { name, email, password,conformpassword } = req.body;
+    const check = await userModel.findOne({ email });
+    if (check) {
       return res.status(200).json({ "ok": false, "msg": "User already exist" });
     }
-    bcrypt.hash(pass, 5, async (err, hash) => {
+    bcrypt.hash(password, 5, async (err, hash) => {
       try {
         if(err){
           res.send(err.message)
         }else{
-          const data = new userModel({ name, email, pass: hash });
+          const data = new userModel({ name, email, password: hash,conformpassword });
           await data.save();
           res.status(200).json({ "ok": true, "msg": "Registered Successfully" });
         }
@@ -132,8 +128,7 @@ router.post("/register", async (req, res) => {
       }
   
       //{ userId: user._id } == this is going to encoded into jwt
-      const token = jwt.sign({ userId: user._id }, process.env.secret, { expiresIn: '1hr' })
-      const refreshToken = jwt.sign({ userId: user._id }, process.env.refresh_secret, { expiresIn: "3hr" })
+      const token = jwt.sign({ userId: user._id }, process.env.secrete_key, { expiresIn: '1hr' })
       const response = {
         "ok": true,
         "token": token,
@@ -141,18 +136,13 @@ router.post("/register", async (req, res) => {
         "id": user._id,
         "userName": user.name
       }
-      tokenList[refreshToken] = response
       res.status(200).json(response)
     } catch (error) {
       res.status(400).json({ "ok": false, "msg": error.message });
     }
   })
   
-
-
-
-
-
+// ************ refreshtoken ************
 router.get("/refreshtoken",async(req,res)=>{
     const refreshtoken = req.cookies.refreshToken;
     try {
