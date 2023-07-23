@@ -18,7 +18,7 @@ require("dotenv").config();
 
 app.get("/",(req,res)=>{
   // res.send("WELCOME")
-  res.redirect('https://lambent-selkie-8d4f00.netlify.app/');
+  res.redirect('https://reacertyper.netlify.app/');
 })
 
 
@@ -277,7 +277,7 @@ const options = {
     },
     servers: [
       {
-        url: 'http://localhost:8080/'
+        url: 'rural-snails-2863.up.railway.app/'
       }
     ]
   },
