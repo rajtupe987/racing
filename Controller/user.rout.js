@@ -99,7 +99,7 @@ require("dotenv").config();
 
 router.post("/signup", async (req, res) => {
     const { name, email, password,conformpassword } = req.body;
-    const check = await UserModel.find({ email });
+    const check = await userModel.find({ email });
     if (check.length > 0) {
       return res.status(200).json({ "ok": false, "msg": "User already exist" });
     }
