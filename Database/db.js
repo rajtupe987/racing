@@ -1,9 +1,12 @@
-const mongoose=require("mongoose");
+const mongoose = require("mongoose");
+require("dotenv").config();
 
-require("dotenv").config()
-const connection=mongoose.connect(process.env.mongoDbURL);
+const connectDB = () => {
+  return mongoose.connect(process.env.mongoDbURL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true,
+  });
+};
 
-
-module.exports={
-    connection
-}
+module.exports = { connectDB };

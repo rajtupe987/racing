@@ -1,5 +1,6 @@
 const express = require("express");
-let { connection } = require("./Database/db");
+let { connectDB } = require("./Database/db");
+
 const socketio = require("socket.io")
 const {Auth_route}=require("./Controller/oath")
 var randomId = require("random-id");
@@ -26,10 +27,9 @@ app.get("/",(req,res)=>{
 app.use("/user", router);
 app.use("/auth",Auth_route)
 
-let ur="mongodb+srv://Raj:Raj@cluster0.egewdp3.mongodb.net/ruralsnails?retryWrites=true&w=majority"
 const expressServer = app.listen(process.env.PORT, async () => {
   try {
-    await "mongodb+srv://Raj:Raj@cluster0.egewdp3.mongodb.net/ruralsnails?retryWrites=true&w=majority"
+    await connectDB
     console.log(`connected to db ${process.env.PORT}`);
   } catch (error) {
     console.log(error.message);
