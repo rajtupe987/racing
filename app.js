@@ -3,7 +3,7 @@ const app = express();
 
 const socketio = require("socket.io");
 let { connectDB } = require("./Database/db");
-
+const {authMiddleWare}=require("./middleware/auth")
 const {Auth_route}=require("./Controller/oath")
 var randomId = require("random-id");
 const { User, update_word_function } = require("./user");
@@ -292,7 +292,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerData))
 
 app.use("/user", router);
 app.use("/auth",Auth_route)
-
+app.use(authMiddleWare)
 // length of the id (default is 30)
 var len = 10;
 // pattern to determin how the id will be generated
