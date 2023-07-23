@@ -97,8 +97,8 @@ require("dotenv").config();
 // ************ refreshtoken ************
 
 
-router.post("/signup", async (req, res) => {
-    const { name, email, password,conformpassword } = req.body;
+router.post("/register", async (req, res) => {
+    const { name, email, pass } = req.body;
     const check = await userModel.find({ email });
     if (check.length > 0) {
       return res.status(200).json({ "ok": false, "msg": "User already exist" });
@@ -133,6 +133,7 @@ router.post("/signup", async (req, res) => {
   
       //{ userId: user._id } == this is going to encoded into jwt
       const token = jwt.sign({ userId: user._id }, process.env.secret, { expiresIn: '1hr' })
+      const refreshToken = jwt.sign({ userId: user._id }, process.env.refresh_secret, { expiresIn: "3hr" })
       const response = {
         "ok": true,
         "token": token,
@@ -140,12 +141,13 @@ router.post("/signup", async (req, res) => {
         "id": user._id,
         "userName": user.name
       }
+      tokenList[refreshToken] = response
       res.status(200).json(response)
     } catch (error) {
       res.status(400).json({ "ok": false, "msg": error.message });
     }
   })
-
+  
 
 
 
